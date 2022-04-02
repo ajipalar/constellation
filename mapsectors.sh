@@ -13,9 +13,12 @@ FZF_SETUP_COMMAND="/usr/local/opt/fzf/install --key-bindings --completion --no-u
 
 YCM_COMPILE_COMMAND="git submodule update --init --recursive; python3 install.py --all"
 
+INSTALL_DIR=$(pwd)
+
 ################################################################################
 ################################# PROCESS ARGS #################################
 ################################################################################
+
 
 
 CONFIGURE_VIM=false
@@ -124,9 +127,7 @@ do_thing() {
 
 install_omz() {
   wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-  ZSH=$HOME/constellation/omz
-  do_thing 'sh install.sh --unattended' " Installing oh-my-zsh "
-  
+  ZSH=./omz do_thing 'sh install.sh --unattended' "Installing oh-my-zsh"
 }
 
 install () {
@@ -147,6 +148,8 @@ test_file_and_move() {
 #################################### PRELUDE ###################################
 ################################################################################
 
+[ "$HOME/constellation" = "$INSTALL_DIR" ] || error "$WD is not $HOME/constellation. Install in $HOME or force override"
+
 message "Configure VIM: $CONFIGURE_VIM"
 message "Configure ZSH: $CONFIGURE_ZSH"
 message "Install tools: $INSTALL_TOOLS"
@@ -164,19 +167,13 @@ then
   test_file_and_move $HOME/.zshrc  $OLD_ZSH_CONFIG
   test_file_and_move $HOME/.zlogin  $OLD_ZSH_CONFIG
   test_file_and_move $HOME/.zlogout $OLD_ZSH_CONFIG
-
-  
+  test_file_and_move $HOME/.zprofile $OLD_ZSH_CONFIG
+  chmod 444 $OLD_ZSH_CONFIG
 
   install_omz
-  echo "Installing zsh packages"
-  # echo $CONFIGURE_ZSH
-  # install $MAC_ZSH_PACKAGES
-  # mkdir .tmp_zsh
-  # mv ~/.*zsh* .tmp_zsh
-  # mv ~/*zsh* .tmp_zsh
-  # mv ~/.zprofile .tmp_zsh
-  # chmod 555 .tmp_zsh
-  # cp .zshenv $HOME
+  [ -f $HOME/.zshrc ] && rm $HOME/.zshrc # remove the .zshrc that oh-my-zsh installs
+  echo "ZDOTDIR=$INSTALL_DIR/solarsystems" > $INSTALL_DIR/solarsystems/.zshenv
+  ln -s $INSTALL_DIR/solarsystems/.zshenv $INSTALL_DIR/solarsystems/.zshrc
 fi
 
 ################################################################################
