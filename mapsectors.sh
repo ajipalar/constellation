@@ -198,10 +198,16 @@ if $CONFIGURE_VIM; then
   [ -d $OLD_VIM_CONFIG ] && error "$OLD_VIM_CONFIG already exits. Cannot install"
   mkdir $OLD_VIM_CONFIG
   test_file_and_move $HOME/.vimrc $OLD_VIM_CONFIG
+  [ -d $HOME/.vim ] && mv $HOME/.vim $OLD_VIM_CONFIG
+  
   chmod 444 $OLD_VIM_CONFIG
   message "Installing vim packages"
   
   ln -s $INSTALL_DIR/solarsystems/.vimrc $HOME
+  ln -s $INSTALL_DIR/solarsystems/.vim $HOME
+
+  # Install Vundle
+  git clone https://github.com/VundleVim/Vundle.vim.git $INSTALL_DIR/solarsystems/.vim/bundle/Vundle.vim
 fi
 
 
