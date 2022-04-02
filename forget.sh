@@ -21,7 +21,14 @@ show_usage() {
 OLD_ZSH_CONFIG=$HOME/.old_zsh_config
 OLD_VIM_CONFIG=$HOME/.old_vim_config
 
-### Define Functions ###
+################################################################################
+############################### DEFINE FUNCTIONS ###############################
+################################################################################
+
+message() {
+  echo -e "$1" >&3
+}
+
 
 error() {
   echo -e "\x1b[31m$1\x1b[0m" >&4
@@ -48,6 +55,33 @@ remove_vim_solarsystem() {
   rm -r $OLD_VIM_CONFIG
 }
 
+status() {
+  echo -n -e "$1" >&3
+}
+
+show_banner() {
+  message "\x1b[34m======================= $1 =======================\x1b[0m"
+}
+
+
+do_thing() {
+  command="$1"
+  description="$2"
+  status "$2"
+  eval $1
+  if [ $? -ne 0 ]; then
+    if $FORCE; then
+      message ": \x1b[31mFAILED - BUT CONTINUING DUE TO FORCED MODE,,,\x1b[0m"
+    else
+      message ": \x1b[31mFAIL\x1b[0m"
+      error "\nError encountered. Please re-run with --verbose for more details"
+    fi
+  else
+    message ": \x1b[32mOK\x1b[0m"
+  fi
+}
+
+
 ### Prepare Environment ###
 
 exec 3>&1 4>&2;
@@ -66,5 +100,13 @@ remove_zsh_solarsystem
 ### REMOVE VIM ###
 
 [ -d $HOME/.old_vim_config ] || warning "$OLD_VIM_CONFIG does not exist."
+# unlink
+rm $HOME/.vim
 
-remove_vim_solarsystem
+do_thing 'brew uninstall vim cmake python' 'uninstall ycm dependancies'
+do_thing 'rm -rf ./solarsystems/.vim/bundle/' 'Uninstall vim packages'
+
+do_thing 'remove_vim_solarsystem' 'remove vim'
+
+#### CLEANUP #####
+do_thing 'rm install.sh*' 'remove install.sh'

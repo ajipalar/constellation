@@ -131,6 +131,14 @@ install_omz() {
   rm install.sh
 }
 
+ycm_mac_install_dependencies() {
+  brew install cmake python
+  brew install vim
+  cd ~/.vim/bundle/YouCompleteMe
+  xcode-select --install
+  python3 install.py --clangd-completer
+}
+
 install () {
   packages=("$@")
   for package_name in "${packages[@]}"
@@ -187,6 +195,7 @@ then
   echo "export ZSH=$INSTALL_DIR/omz" >> $ZSHENV
 
   ln -s $INSTALL_DIR/solarsystems/.zshenv $INSTALL_DIR/solarsystems/.zshrc $HOME
+  ln -s $INSTALL_DIR/themes/my-lambda.zsh-theme $INSTALL_DIR/omz/themes 
 fi
 
 ################################################################################
@@ -196,18 +205,23 @@ fi
 if $CONFIGURE_VIM; then
   OLD_VIM_CONFIG=$HOME/.old_vim_config
   [ -d $OLD_VIM_CONFIG ] && error "$OLD_VIM_CONFIG already exits. Cannot install"
-  mkdir $OLD_VIM_CONFIG
+  do_thing 'mkdir $OLD_VIM_CONFIG' 'hide $OLD_VIM_CONFIG'
   test_file_and_move $HOME/.vimrc $OLD_VIM_CONFIG
   [ -d $HOME/.vim ] && mv $HOME/.vim $OLD_VIM_CONFIG
   
-  chmod 444 $OLD_VIM_CONFIG
-  message "Installing vim packages"
+  do_thing 'chmod 444 $OLD_VIM_CONFIG' 'Set $OLD_VIM_CONFIG to read only'
   
-  ln -s $INSTALL_DIR/solarsystems/.vimrc $HOME
-  ln -s $INSTALL_DIR/solarsystems/.vim $HOME
+  do_thing 'ln -s $INSTALL_DIR/solarsystems/.vimrc $HOME' "symlink .vimrc"
+  do_thing 'ln -s $INSTALL_DIR/solarsystems/.vim $HOME' "symlink .vim"
 
-  # Install Vundle
-  git clone https://github.com/VundleVim/Vundle.vim.git $INSTALL_DIR/solarsystems/.vim/bundle/Vundle.vim
+  do_thing 'git clone https://github.com/VundleVim/Vundle.vim.git $INSTALL_DIR/solarsystems/.vim/bundle/Vundle.vim' 'Install Vundle'
+  do_thing 'brew install python cmake vim' 'Install python cmake vim'
+  do_thing 'vim +PluginInstall +qall' 'Install Vundle Plugins'
+
+  # Compile YCM
+  do_thing 'cd $INSTALL_DIR/solarsystems/.vim/bundle/YouCompleteMe && ./install.py --clangd-completer' "Compile YCM"
+  cd $INSTALL_DIR
+  
 fi
 
 
