@@ -128,6 +128,7 @@ do_thing() {
 install_omz() {
   wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
   ZSH=./omz do_thing 'sh install.sh --unattended' "Installing oh-my-zsh"
+  rm install.sh
 }
 
 install () {
@@ -148,7 +149,7 @@ test_file_and_move() {
 #################################### PRELUDE ###################################
 ################################################################################
 
-[ "$HOME/constellation" = "$INSTALL_DIR" ] || error "$WD is not $HOME/constellation. Install in $HOME or force override"
+[ "$HOME/constellation" = "$INSTALL_DIR" ] || error "constellation expects to be installed in $HOME"
 
 message "Configure VIM: $CONFIGURE_VIM"
 message "Configure ZSH: $CONFIGURE_ZSH"
@@ -187,7 +188,14 @@ fi
 ################################################################################
 
 if $CONFIGURE_VIM; then
-  echo "Installing vim packages"
+  OLD_VIM_CONFIG=$HOME/.old_vim_config
+  [ -d $OLD_VIM_CONFIG ] && error "$OLD_VIM_CONFIG already exits. Cannot install"
+  mkdir $OLD_VIM_CONFIG
+  test_file_and_move $HOME/.vimrc $OLD_VIM_CONFIG
+  chmod 444 $OLD_VIM_CONFIG
+  message "Installing vim packages"
+  
+  ln -s $INSTALL_DIR/solarsystems/.vimrc $HOME
 fi
 
 
