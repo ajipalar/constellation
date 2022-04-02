@@ -143,7 +143,7 @@ test_file_and_move() {
   [ -f $1 ] && mv $1 $2
 }
 
-  
+# Zsh Plugin functions
 
 ################################################################################
 #################################### PRELUDE ###################################
@@ -173,6 +173,12 @@ then
 
   install_omz
   [ -f $HOME/.zshrc ] && rm $HOME/.zshrc # remove the .zshrc that oh-my-zsh installs
+
+  # Install Zsh Plugins
+
+    git clone https://github.com/jeffreytse/zsh-vi-mode $INSTALL_DIR/omz/custom/plugins/zsh-vi-mode
+
+  # Configure zsh dotfiles
 
   ZSHENV=$INSTALL_DIR/solarsystems/.zshenv
   echo "ZDOTDIR=$INSTALL_DIR/solarsystems" > $ZSHENV

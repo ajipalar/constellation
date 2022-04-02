@@ -1,3 +1,4 @@
 omz
 my_envs
-solarsystems/.zshenv # File dynamically generated
+solarsystems/.zshenv
+solarsystems/.zcomp*
