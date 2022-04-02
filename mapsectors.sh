@@ -172,8 +172,14 @@ then
 
   install_omz
   [ -f $HOME/.zshrc ] && rm $HOME/.zshrc # remove the .zshrc that oh-my-zsh installs
-  echo "ZDOTDIR=$INSTALL_DIR/solarsystems" > $INSTALL_DIR/solarsystems/.zshenv
-  ln -s $INSTALL_DIR/solarsystems/.zshenv $INSTALL_DIR/solarsystems/.zshrc
+
+  ZSHENV=$INSTALL_DIR/solarsystems/.zshenv
+  echo "ZDOTDIR=$INSTALL_DIR/solarsystems" > $ZSHENV
+  
+  # Path to your oh-my-zsh installation.
+  echo "export ZSH=$INSTALL_DIR/omz" >> $ZSHENV
+
+  ln -s $INSTALL_DIR/solarsystems/.zshenv $INSTALL_DIR/solarsystems/.zshrc $HOME
 fi
 
 ################################################################################
