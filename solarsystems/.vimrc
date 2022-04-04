@@ -225,3 +225,25 @@ map <leader>tu :Tmuxline lightline_visual full<CR>
 
 " python
 noremap <leader>pr :! python %<CR>
+
+" Options from dougblack.io/words/a-good-vimrc.html
+" Spaces and Tabs
+set tabstop=4          " number of visual spaces per TAB
+set softtabstop=4      " number of spaces in tab when editing 
+set expandtab          " tabs are spaces
+
+" UI Config
+set showcmd            " show command in bottom bar     
+set cursorline         " highlight current line
+set wildmenu           " visual autocomplete for command menu
+set lazyredraw         " redraw only when needed
+set showmatch          " highlight mathcing [{()}]
+
+" Searching
+set incsearch          " search as characters are entered
+set hlsearch
+
+" Folding
+" :mksession saves a vim session
+" vim -S loads the session from Session.vim
+" TODO consider using the silver_searcher ag project
