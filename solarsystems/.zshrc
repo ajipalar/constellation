@@ -131,6 +131,8 @@ alias et="vim ~/.tmux.conf"
 alias cee="conda env export"
 
 alias ta="tmux a"
+alias work='ssh $REMOTE_WORKSTATION'
+alias wynton='ssh $WYNTON_LOGIN_ID'
 
 function color {
   echo $FG[$1]$1
